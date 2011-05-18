@@ -15,8 +15,18 @@ let g:loaded_jekyll = 1
 let s:cpo_save = &cpo
 set cpo&vim
 
+let g:use_draft = 0
+
 if !exists('g:jekyll_path')
   let g:jekyll_path = $HOME . "/src/blog"
+endif
+
+if !exists('g:jekyll_posts_path')
+  let g:jekyll_path = $HOME . "/src/blog/_posts"
+endif
+
+if !exists('g:jekyll_drafts_path')
+  let g:jekyll_path = $HOME . "/src/blog/_drafts"
 endif
 
 if !exists('g:jekyll_post_suffix')
@@ -102,7 +112,7 @@ endfunction
 command! -nargs=* JekyllBuild :call JekyllBuild(<q-args>)
 
 function JekyllList()
-  exe "e " . g:jekyll_path . "/_posts"
+  exe "e " . g:jekyll_posts_path
 endfunction
 command! -nargs=0 JekyllList :call JekyllList()
 
@@ -130,7 +140,11 @@ function JekyllPost(title)
   if title != ''
     let file_name = strftime("%Y-%m-%d-") . s:esctitle(title) . "." . g:jekyll_post_suffix
     echo "Making that post " . file_name
-    exe "e " . g:jekyll_path . "/_posts/" . file_name
+    if g:use_draft == 1
+      exe "e " . g:jekyll_drafts_path . "/" . file_name
+    else
+      exe "e " . g:jekyll_posts_path . "/" . file_name
+    endif
 
     let template = ["---", "layout: post", "title: \"" . title . "\"", "published: " . published]
     if created != ""
@@ -150,6 +164,13 @@ function JekyllPost(title)
   endif
 endfunction
 command! -nargs=? JekyllPost :call JekyllPost(<q-args>)
+
+function JekyllDraft(title)
+  let g:use_draft = 1
+  call JekyllPost(a:title)
+  let g:use_draft = 0
+endfunction
+command! -nargs=? JekyllDraft :call JekyllDraft(<q-args>)
 
 " Initialization {{{1
 augroup jekyllPluginDetect
