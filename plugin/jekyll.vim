@@ -37,6 +37,10 @@ if !exists('g:jekyll_post_published')
   let g:jekyll_post_published = "true"
 endif
 
+if !exists('g:jekyll_post_date')
+  let g:jekyll_post_date = "false"
+endif
+
 if !exists('g:jekyll_post_created')
   let g:jekyll_post_created = ""
 endif
@@ -121,6 +125,7 @@ function JekyllPost(title)
   let created = g:jekyll_post_created
   let tags = g:jekyll_prompt_tags
   let categories = g:jekyll_prompt_categories
+  let date = g:jekyll_post_date
 
   if created == "epoch"
     let created = localtime() 
@@ -155,6 +160,9 @@ function JekyllPost(title)
     endif
     if categories != ""
       call add(template, "categories: [" . categories . "]")
+    endif
+    if date != ""
+      call add(template, "date: " . strftime("%Y-%m-%d %H:%M:%S"))
     endif
     call extend(template,["---", ""])
 
