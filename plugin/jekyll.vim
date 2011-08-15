@@ -162,7 +162,7 @@ function JekyllPost(title)
       call add(template, "categories: [" . categories . "]")
     endif
     if date != ""
-      call add(template, "date: " . strftime("%Y-%m-%d %H:%M:%S"))
+      call add(template, "date: " . strftime("%Y-%m-%d %H:%M:%S %z"))
     endif
     call extend(template,["---", ""])
 
